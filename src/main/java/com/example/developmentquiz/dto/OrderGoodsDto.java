@@ -6,19 +6,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "product")
-public class ProductDto {
+@Table(name = "orderGoods")
+public class OrderGoodsDto {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String imgURL;
-    private String productName;
-    private int unitPrice;
-    private String unitType;
+    private int amount;
+    @OneToOne
+    private ProductDto product;
+
 }

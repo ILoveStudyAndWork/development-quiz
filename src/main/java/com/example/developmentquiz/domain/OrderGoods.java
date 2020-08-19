@@ -5,15 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
-    private String imgURL;
+public class OrderGoods {
+    private int amount;
     private String productName;
     private int unitPrice;
     private String unitType;
-
 }
