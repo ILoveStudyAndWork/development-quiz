@@ -5,6 +5,7 @@ import com.example.developmentquiz.dto.ProductDto;
 import com.example.developmentquiz.repository.OrderRepository;
 import com.example.developmentquiz.repository.ProductRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,9 +17,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -83,4 +87,15 @@ class OrderControllerTest {
         assertEquals("可乐1",orderGoodsDtoList.get(0).getProduct().getProductName());
         assertEquals(2,orderGoodsDtoList.get(0).getAmount());
     }
+
+    @Test
+    void should_get_order_list() throws Exception {
+        orderRepository.save(orderGoodsDto);
+        mockMvc.perform(get("/order/list"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$",hasSize(1)))
+                .andExpect(jsonPath("$[0].amount",is(1)))
+                .andExpect(jsonPath("$[0].unitPrice",is(1)))
+                .andExpect(jsonPath("$[0].unitType",is("瓶")))
+                .andExpect(jsonPath("$[0].==",is("可乐1")));                    }
 }
