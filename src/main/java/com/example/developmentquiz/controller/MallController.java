@@ -1,10 +1,13 @@
 package com.example.developmentquiz.controller;
 
+import com.example.developmentquiz.domain.Product;
 import com.example.developmentquiz.dto.ProductDto;
 import com.example.developmentquiz.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -37,6 +40,24 @@ public class MallController {
     public ResponseEntity getProductList(){
         productDtoList = productRepository.findAll();
         return ResponseEntity.ok(productDtoList);
+    }
+
+    @PostMapping("/product/add")
+    public ResponseEntity getProductList(@RequestBody Product product){
+        Boolean ifExist = productRepository.existsByProductName(product.getProductName());
+        if (ifExist){
+            return ResponseEntity.badRequest().build();
+        }else {
+            ProductDto productToBeAdd = ProductDto.builder()
+                    .productName(product.getProductName())
+                    .unitType(product.getUnitType())
+                    .unitPrice(product.getUnitPrice())
+                    .imgURL(product.getImgURL())
+                    .build();
+            productRepository.save(productToBeAdd);
+            return ResponseEntity.created(null).build();
+        }
+
     }
 
 

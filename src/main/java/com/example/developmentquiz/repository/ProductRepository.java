@@ -8,4 +8,5 @@ import java.util.List;
 public interface ProductRepository extends CrudRepository<ProductDto,Integer> {
     @Override
     List<ProductDto> findAll();
+    Boolean existsByProductName(String productName);
 }

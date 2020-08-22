@@ -14,8 +14,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -49,7 +52,6 @@ class MallControllerTest {
         productRepository.save(cokeDto2);
         productRepository.save(cokeDto3);
         productRepository.save(cokeDto4);
-        productRepository.save(cokeDto5);
 //        orderGoodsDto = OrderGoodsDto.builder().amount(1).product(cokeDto1).build();
 //        orderGoodsDto1 = OrderGoodsDto.builder().amount(1).product(cokeDto2).build();
 
@@ -67,6 +69,26 @@ class MallControllerTest {
                 .andExpect(jsonPath("$[0].productName",is(cokeDto1.getProductName())))
                 .andExpect(jsonPath("$[0].unitPrice",is(cokeDto1.getUnitPrice())))
                 .andExpect(jsonPath("$[0].imgURL",is(cokeDto1.getImgURL())));
+    }
+
+    @Test
+    void should_add_product_success() throws Exception {
+        String jsonProduct = new ObjectMapper().writeValueAsString(cokeDto5);
+        mockMvc.perform(post("/product/add")
+                .content(jsonProduct)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+        List<ProductDto> productDtoList = productRepository.findAll();
+        assertEquals(5, productDtoList.size());
+    }
+
+    @Test
+    void should_add_product_fail_when_product_exist() throws Exception {
+        String jsonProduct = new ObjectMapper().writeValueAsString(cokeDto4);
+        mockMvc.perform(post("/product/add")
+                .content(jsonProduct)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
 

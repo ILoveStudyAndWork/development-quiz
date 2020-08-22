@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @Builder
 @AllArgsConstructor
@@ -15,5 +14,4 @@ public class Product {
     private String productName;
     private int unitPrice;
     private String unitType;
-
 }
