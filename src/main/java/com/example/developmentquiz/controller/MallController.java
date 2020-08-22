@@ -46,7 +46,7 @@ public class MallController {
     public ResponseEntity getProductList(@RequestBody Product product){
         Boolean ifExist = productRepository.existsByProductName(product.getProductName());
         if (ifExist){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("existed");
         }else {
             ProductDto productToBeAdd = ProductDto.builder()
                     .productName(product.getProductName())

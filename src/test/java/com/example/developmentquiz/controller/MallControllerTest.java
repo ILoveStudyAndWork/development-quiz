@@ -88,7 +88,8 @@ class MallControllerTest {
         mockMvc.perform(post("/product/add")
                 .content(jsonProduct)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$",is("existed")));
     }
 
 
