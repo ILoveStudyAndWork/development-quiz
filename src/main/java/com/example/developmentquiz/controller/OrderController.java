@@ -57,4 +57,10 @@ public class OrderController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(orderList);
     }
+
+    @GetMapping("/order/delete")
+    public ResponseEntity getOrderList(@RequestParam int orderId){
+        orderRepository.deleteById(orderId);
+        return ResponseEntity.ok().build();
+    }
 }

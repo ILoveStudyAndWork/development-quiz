@@ -41,6 +41,7 @@ class OrderControllerTest {
     ProductDto cokeDto5;
     OrderGoodsDto orderGoodsDto;
     OrderGoodsDto orderGoodsDto1;
+
     @BeforeEach
     void setUp() {
         productRepository.deleteAll();
@@ -67,25 +68,25 @@ class OrderControllerTest {
     void should_add_new_order_to_order_list_when_product_no_exist() throws Exception {
         orderRepository.save(orderGoodsDto);
         int productId = cokeDto2.getId();
-        mockMvc.perform(get("/order/add?productId="+productId))
+        mockMvc.perform(get("/order/add?productId=" + productId))
                 .andExpect(status().isCreated());
 
         List<OrderGoodsDto> orderGoodsDtoList = orderRepository.findAll();
-        assertEquals(2,orderGoodsDtoList.size());
-        assertEquals("可乐2",orderGoodsDtoList.get(1).getProduct().getProductName());
-        assertEquals(1,orderGoodsDtoList.get(0).getAmount());
+        assertEquals(2, orderGoodsDtoList.size());
+        assertEquals("可乐2", orderGoodsDtoList.get(1).getProduct().getProductName());
+        assertEquals(1, orderGoodsDtoList.get(0).getAmount());
     }
 
     @Test
     void should_update_order_when_product_exist() throws Exception {
         orderRepository.save(orderGoodsDto);
         int productId = cokeDto1.getId();
-        mockMvc.perform(get("/order/add?productId="+productId))
+        mockMvc.perform(get("/order/add?productId=" + productId))
                 .andExpect(status().isCreated());
         List<OrderGoodsDto> orderGoodsDtoList = orderRepository.findAll();
-        assertEquals(1,orderGoodsDtoList.size());
-        assertEquals("可乐1",orderGoodsDtoList.get(0).getProduct().getProductName());
-        assertEquals(2,orderGoodsDtoList.get(0).getAmount());
+        assertEquals(1, orderGoodsDtoList.size());
+        assertEquals("可乐1", orderGoodsDtoList.get(0).getProduct().getProductName());
+        assertEquals(2, orderGoodsDtoList.get(0).getAmount());
     }
 
     @Test
@@ -93,9 +94,19 @@ class OrderControllerTest {
         orderRepository.save(orderGoodsDto);
         mockMvc.perform(get("/order/list"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$",hasSize(1)))
-                .andExpect(jsonPath("$[0].amount",is(1)))
-                .andExpect(jsonPath("$[0].unitPrice",is(1)))
-                .andExpect(jsonPath("$[0].unitType",is("瓶")))
-                .andExpect(jsonPath("$[0].==",is("可乐1")));                    }
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].amount", is(1)))
+                .andExpect(jsonPath("$[0].unitPrice", is(1)))
+                .andExpect(jsonPath("$[0].unitType", is("瓶")))
+                .andExpect(jsonPath("$[0].==", is("可乐1")));
+    }
+
+    @Test
+    void should_delete_order_by_id() throws Exception {
+        orderRepository.save(orderGoodsDto);
+        mockMvc.perform(get("/order/delete?orderId="+orderGoodsDto.getId()))
+                .andExpect(status().isOk());
+        List<OrderGoodsDto> orderGoodsDtoList = orderRepository.findAll();
+        assertEquals(0, orderGoodsDtoList.size());
+    }
 }
