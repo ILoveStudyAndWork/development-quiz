@@ -5,6 +5,7 @@ import com.example.developmentquiz.dto.OrderGoodsDto;
 import com.example.developmentquiz.dto.ProductDto;
 import com.example.developmentquiz.repository.OrderRepository;
 import com.example.developmentquiz.repository.ProductRepository;
+import com.example.developmentquiz.toFront.OrderToFrontEnd;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+@CrossOrigin
 @RestController
 public class OrderController {
     @Autowired
@@ -20,9 +21,9 @@ public class OrderController {
     @Autowired
     ProductRepository productRepository;
 
-    private List<OrderGoods> orderList;
+    private List<OrderToFrontEnd> orderList;
 
-    @GetMapping("/order/add")
+    @GetMapping("/mall/order/add")
     public ResponseEntity addProductToOrder(@RequestParam int productId){
         Optional<ProductDto> productDto = productRepository.findById(productId);
         if (!productDto.isPresent()) {
@@ -36,19 +37,22 @@ public class OrderController {
                     .product(productDto.get())
                     .build();
             orderRepository.save(orderGoodsDto);
+            return ResponseEntity.created(null).body(orderGoodsDto.getId());
         } else {
             orderHasThisProduct.setAmount(orderHasThisProduct.getAmount()+1);
             orderRepository.save(orderHasThisProduct);
+            return ResponseEntity.created(null).body(orderHasThisProduct.getId());
         }
-        return ResponseEntity.created(null).build();
+
 
 
     }
 
-    @GetMapping("/order/list")
+    @GetMapping("/mall/order/list")
     public ResponseEntity getOrderList(){
         orderList = orderRepository.findAll().stream().map(
-                order -> OrderGoods.builder()
+                order -> OrderToFrontEnd.builder()
+                        .id(order.getId())
                         .amount(order.getAmount())
                         .productName(order.getProduct().getProductName())
                         .unitPrice(order.getProduct().getUnitPrice())
@@ -58,7 +62,7 @@ public class OrderController {
         return ResponseEntity.ok(orderList);
     }
 
-    @GetMapping("/order/delete")
+    @GetMapping("/mall/order/delete")
     public ResponseEntity getOrderList(@RequestParam int orderId){
         orderRepository.deleteById(orderId);
         return ResponseEntity.ok().build();

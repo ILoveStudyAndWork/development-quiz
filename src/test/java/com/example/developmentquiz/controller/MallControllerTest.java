@@ -63,7 +63,7 @@ class MallControllerTest {
 
     @Test
     void should_get_all_product_list() throws Exception {
-        mockMvc.perform(get("/product/list")).andExpect(status().isOk())
+        mockMvc.perform(get("/mall/product/list")).andExpect(status().isOk())
                 .andExpect(jsonPath("$",hasSize(5)))
                 .andExpect(jsonPath("$[0].id",is(cokeDto1.getId())))
                 .andExpect(jsonPath("$[0].productName",is(cokeDto1.getProductName())))
@@ -74,7 +74,7 @@ class MallControllerTest {
     @Test
     void should_add_product_success() throws Exception {
         String jsonProduct = new ObjectMapper().writeValueAsString(cokeDto5);
-        mockMvc.perform(post("/product/add")
+        mockMvc.perform(post("/mall/product/add")
                 .content(jsonProduct)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
@@ -85,11 +85,11 @@ class MallControllerTest {
     @Test
     void should_add_product_fail_when_product_exist() throws Exception {
         String jsonProduct = new ObjectMapper().writeValueAsString(cokeDto4);
-        mockMvc.perform(post("/product/add")
+        mockMvc.perform(post("/mall/product/add")
                 .content(jsonProduct)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$",is("existed")));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.ifExist",is("existed")));
     }
 
 
