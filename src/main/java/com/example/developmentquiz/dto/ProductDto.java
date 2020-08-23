@@ -19,6 +19,6 @@ public class ProductDto {
     private int id;
     private String imgURL;
     private String productName;
-    private int unitPrice;
+    private float unitPrice;
     private String unitType;
 }

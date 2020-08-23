@@ -13,6 +13,6 @@ public class OrderToFrontEnd {
     private int id;
     private int amount;
     private String productName;
-    private int unitPrice;
+    private float unitPrice;
     private String unitType;
 }

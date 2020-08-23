@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class OrderGoods {
     private int amount;
     private String productName;
-    private int unitPrice;
+    private float unitPrice;
     private String unitType;
 }
